@@ -1,0 +1,62 @@
+[
+  {
+    "name": "Laptop",
+    "image": "laptop.jpg",
+    "link": "./category/laptop"
+  },
+  {
+    "name": "Computer",
+    "image": "computer.png",
+    "link": "./category/computer"
+  },
+  {
+    "name": "Phone",
+    "image": "smart-phone.png",
+    "link": "./category/smart-phone"
+  },
+  {
+    "name": "Tablet",
+    "image": "tablet.png",
+    "link": "./category/tablet"
+  },
+  {
+    "name": "Laptop",
+    "image": "laptop.jpg",
+    "link": "./category/laptop"
+  },
+  {
+    "name": "Computer",
+    "image": "computer.png",
+    "link": "./category/computer"
+  },
+  {
+    "name": "Phone",
+    "image": "smart-phone.png",
+    "link": "./category/smart-phone"
+  },
+  {
+    "name": "Tablet",
+    "image": "tablet.png",
+    "link": "./category/tablet"
+  },
+  {
+    "name": "Laptop",
+    "image": "laptop.jpg",
+    "link": "./category/laptop"
+  },
+  {
+    "name": "Computer",
+    "image": "computer.png",
+    "link": "./category/computer"
+  },
+  {
+    "name": "Phone",
+    "image": "smart-phone.png",
+    "link": "./category/smart-phone"
+  },
+  {
+    "name": "Tablet",
+    "image": "tablet.png",
+    "link": "./category/tablet"
+  }
+]

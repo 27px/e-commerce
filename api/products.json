@@ -1,0 +1,74 @@
+[
+  {
+    "name": "Acer Aspire",
+    "price": 28999,
+    "image": "laptop.jpg",
+    "link": "/category/laptop/acer/aspire"
+  },
+  {
+    "name": "Asus ROG",
+    "price": 38990,
+    "image": "computer.png",
+    "link": "/category/computer/asus/rog"
+  },
+  {
+    "name": "Lenovo Tab",
+    "price": 66447,
+    "image": "tablet.png",
+    "link": "/category/tablet/lenovo/tab"
+  },
+  {
+    "name": "Redmi 9",
+    "price": 10999,
+    "image": "smart-phone.png",
+    "link": "/category/smart-phone/redmi/9"
+  },
+  {
+    "name": "Acer Aspire",
+    "price": 28999,
+    "image": "laptop.jpg",
+    "link": "/category/laptop/acer/aspire"
+  },
+  {
+    "name": "Asus ROG",
+    "price": 38990,
+    "image": "computer.png",
+    "link": "/category/computer/asus/rog"
+  },
+  {
+    "name": "Lenovo Tab",
+    "price": 66447,
+    "image": "tablet.png",
+    "link": "/category/tablet/lenovo/tab"
+  },
+  {
+    "name": "Redmi 9",
+    "price": 10999,
+    "image": "smart-phone.png",
+    "link": "/category/smart-phone/redmi/9"
+  },
+  {
+    "name": "Acer Aspire",
+    "price": 28999,
+    "image": "laptop.jpg",
+    "link": "/category/laptop/acer/aspire"
+  },
+  {
+    "name": "Asus ROG",
+    "price": 38990,
+    "image": "computer.png",
+    "link": "/category/computer/asus/rog"
+  },
+  {
+    "name": "Lenovo Tab",
+    "price": 66447,
+    "image": "tablet.png",
+    "link": "/category/tablet/lenovo/tab"
+  },
+  {
+    "name": "Redmi 9",
+    "price": 10999,
+    "image": "smart-phone.png",
+    "link": "/category/smart-phone/redmi/9"
+  }
+]

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8" />
+    <title>E-Commerce</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="E-Commerce Site" />
+    <link rel="icon" href="./favicon.ico" />
+    <link rel="stylesheet" href="./styles/main.css" />
+    <script src="./scripts/main.js"></script>
+  </head>
+  <body class="light-theme blue-accent">
+    <!-- splash screen -->
+    <div class="splash"></div>
+    <!-- navigation -->
+    <nav>
+      <!-- Site Information -->
+      <div class="info">
+        <div class="logo"></div>
+        <div class="site-name">E-Commerce</div>
+      </div>
+      <!-- Search -->
+      <div class="search-container">
+        <input type="text" class="search" id="search" placeholder="Search" />
+        <div class="search-icon"></div>
+      </div>
+      <!-- buttons -->
+      <div class="options">
+        <!-- <div class="option theme-switcher" id="theme-switcher"></div> -->
+        <div class="option wishlist" id="wishlist"></div>
+        <div class="option cart" id="cart"></div>
+        <div class="option user" id="user"></div>
+      </div>
+    </nav>
+    <!-- category template -->
+    <template id="category">
+      <div class="category">
+        <div class="image"></div>
+        <div class="name"></div>
+      </div>
+    </template>
+    <!-- category -->
+    <div class="category-container"></div>
+    <!-- banner -->
+    <div class="banner"></div>
+    <!-- product template -->
+    <template id="product">
+      <div class="product">
+        <div class="image"></div>
+        <div class="name"></div>
+        <div class="price"></div>
+      </div>
+    </template>
+    <!-- products -->
+    <div class="product-container"></div>
+    <!-- offers -->
+    <div class="offer"></div>
+    <!-- footer -->
+    <footer>Developed by Rahul R</footer>
+  </body>
+</html>
