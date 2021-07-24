@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="./styles/main.css" />
     <script src="./scripts/main.js"></script>
   </head>
-  <body class="light-theme blue-accent">
+  <body class="light-theme blue-accent scroller">
     <!-- splash screen -->
     <div class="splash"></div>
     <!-- navigation -->
@@ -21,15 +21,14 @@
       </div>
       <!-- Search -->
       <div class="search-container">
-        <input type="text" class="search" id="search" placeholder="Search" />
+        <input type="text" class="search" placeholder="Search" />
         <div class="search-icon"></div>
       </div>
       <!-- buttons -->
       <div class="options">
-        <!-- <div class="option theme-switcher" id="theme-switcher"></div> -->
-        <div class="option wishlist" id="wishlist"></div>
-        <div class="option cart" id="cart"></div>
-        <div class="option user" id="user"></div>
+        <div class="option wishlist" link="/wishlist"></div>
+        <div class="option cart" link="/cart"></div>
+        <div class="option user" link="/user"></div>
       </div>
     </nav>
     <!-- category template -->
@@ -42,7 +41,13 @@
     <!-- category -->
     <div class="category-container"></div>
     <!-- banner -->
-    <div class="banner"></div>
+    <div class="banner goto">
+      <!-- left arrow -->
+      <div class="arrow left"></div>
+      <!-- right arrow -->
+      <div class="arrow right"></div>
+      <div class="dot-indicator"></div>
+    </div>
     <!-- product template -->
     <template id="product">
       <div class="product">
@@ -52,9 +57,9 @@
       </div>
     </template>
     <!-- products -->
-    <div class="product-container"></div>
+    <div class="product-container scroller"></div>
     <!-- offers -->
-    <div class="offer"></div>
+    <div class="offer goto" link="/offer"></div>
     <!-- footer -->
     <footer>Developed by Rahul R</footer>
   </body>
