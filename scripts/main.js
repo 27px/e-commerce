@@ -1,15 +1,18 @@
 const _ = query => document.querySelector(query);
 const $ = query => document.querySelectorAll(query);
+const toast_delay = 3 * 1000; // 3 in seconds (same as css animation delay)
 
 let body, splash, wishlist, cart, user, search, class_list, banner, offer;
 let category_template, product_template, banner_right_arrow, banner_left_arrow;
-let dot_indicator;
-let max_allowed_category = 10;
-let category_data = [];
-let product_data = [];
-let banner_data = [];
-let banner_dot_elements=[];
-let current_banner_index = 0;
+let dot_indicator,
+  max_allowed_category = 10,
+  category_data = [],
+  product_data = [],
+  banner_data = [],
+  banner_dot_elements = [],
+  current_banner_index = 0,
+  notification_queue = [],
+  notification_added = 0;
 
 const category_url = "../api/category.json";
 const category_image_url = "./images/category";
@@ -42,8 +45,11 @@ window.onload = async () => {
   Array.from($(".goto")).forEach(button => {
     button.addEventListener("click", open_link);
   });
+
   banner_left_arrow.addEventListener("click", banner_move_left);
   banner_right_arrow.addEventListener("click", banner_move_right);
+
+  search.addEventListener("keyup", search_it);
 
   load_category();
   load_products();
@@ -56,18 +62,28 @@ window.onload = async () => {
 window.onresize = setSize;
 
 function setSize() {
-  let width = body.clientWidth;
-  let category_width = 100;
+  const width = body.clientWidth;
+  const category_width = 100;
   max_allowed_category = parseInt(width / category_width);
   show_category_items();
 }
 
 function open_link(item) {
-  window.open(this.getAttribute("link"));
+  let link = this.getAttribute("link");
+  if (link != null) {
+    window.open(link);
+  } else {
+    toast("Link not available", "warning");
+  }
 }
 
 function goto_link(item) {
-  window.location = this.getAttribute("link");
+  let link = this.getAttribute("link");
+  if (link != null) {
+    window.location = link;
+  } else {
+    toast("Link not available", "warning");
+  }
 }
 
 function show_category_items() {
@@ -82,7 +98,7 @@ function show_category_items() {
   });
   data.forEach(category => {
     // cloning category template
-    let item = category_template.cloneNode(true).content.children[0];
+    const item = category_template.cloneNode(true).content.children[0];
     item.setAttribute("link", category.link);
     item.querySelector(
       ".image"
@@ -94,7 +110,7 @@ function show_category_items() {
 }
 
 function show_product_items() {
-  let data = product_data;
+  const data = product_data;
   data.push({
     name: "View More",
     price: "",
@@ -103,7 +119,7 @@ function show_product_items() {
   });
   data.forEach(product => {
     // cloning category template
-    let item = product_template.cloneNode(true).content.children[0];
+    const item = product_template.cloneNode(true).content.children[0];
     item.setAttribute("link", product.link);
     item.querySelector(
       ".image"
@@ -118,10 +134,14 @@ function show_product_items() {
 }
 
 function show_banner_items() {
-  let item = banner_data[current_banner_index];
+  if (banner_data.length < 1) {
+    toast("No banner data found", "warning");
+    return;
+  }
+  const item = banner_data[current_banner_index];
   banner.style.backgroundImage = `url("${banner_image_url}/${item.image}")`;
   banner.setAttribute("link", item.link);
-  let left_class = banner_left_arrow.classList,
+  const left_class = banner_left_arrow.classList,
     right_class = banner_right_arrow.classList;
   if (current_banner_index == 0) {
     left_class.add("disabled");
@@ -136,9 +156,9 @@ function show_banner_items() {
   change_dot_active_state();
 }
 
-let render_dots = () => {
+const render_dots = () => {
   banner_data.forEach((_, i) => {
-    let dot = document.createElement("div");
+    const dot = document.createElement("div");
     dot.classList.add("dot");
     dot.setAttribute("index", i);
     dot.addEventListener("click", goto_banner);
@@ -149,13 +169,13 @@ let render_dots = () => {
 
 function goto_banner(event) {
   event.stopPropagation();
-  current_banner_index=parseInt(event.currentTarget.getAttribute("index"));
+  current_banner_index = parseInt(event.currentTarget.getAttribute("index"));
   show_banner_items();
 }
 
-let change_dot_active_state = () => {
-  banner_dot_elements.forEach((dot,i)=>{
-    if(current_banner_index==i) {
+const change_dot_active_state = () => {
+  banner_dot_elements.forEach((dot, i) => {
+    if (current_banner_index == i) {
       dot.classList.add("active");
     } else {
       dot.classList.remove("active");
@@ -163,69 +183,112 @@ let change_dot_active_state = () => {
   });
 };
 
-let load_category = async () => {
-  let data = null;
-  try {
-    let response = await fetch(category_url);
-    if (response.status !== 200) {
-      throw new Error(`Status error ${resp.status}`);
-    }
-    data = await response.json();
-  } catch (error) {
-    console.log(error);
-    data = [];
-  } finally {
-    category_data = data;
-    show_category_items();
-  }
+const load_category = async () => {
+  category_data =
+    (await fetch_json(category_url).catch(error => {
+      console.error(error);
+      toast("Category loading Failed", "error");
+    })) || [];
+  show_category_items();
 };
 
-let load_products = async () => {
-  let data = null;
-  try {
-    let response = await fetch(products_url);
-    if (response.status !== 200) {
-      throw new Error(`Status error ${resp.status}`);
-    }
-    data = await response.json();
-  } catch (error) {
-    console.log(error);
-    data = [];
-  } finally {
-    product_data = data;
-    show_product_items();
-  }
+const load_products = async () => {
+  product_data =
+    (await fetch_json(products_url).catch(error => {
+      console.error(error);
+      toast("Product loading Failed", "error");
+    })) || [];
+  show_product_items();
 };
 
-let load_banner = async () => {
-  let data = null;
-  try {
-    let response = await fetch(banner_url);
-    if (response.status !== 200) {
-      throw new Error(`Status error ${resp.status}`);
-    }
-    data = await response.json();
-  } catch (error) {
-    console.log(error);
-    data = [];
-  } finally {
-    banner_data = data;
-    render_dots();
-    show_banner_items();
-  }
+const load_banner = async () => {
+  banner_data =
+    (await fetch_json(banner_url).catch(error => {
+      console.error(error);
+      toast("Banner loading Failed", "error");
+    })) || [];
+  render_dots();
+  show_banner_items();
 };
 
-let banner_move_left = event => {
+const banner_move_left = event => {
   event.stopPropagation();
   current_banner_index = Math.max(0, current_banner_index - 1);
   show_banner_items();
 };
 
-let banner_move_right = event => {
+const banner_move_right = event => {
   event.stopPropagation();
   current_banner_index = Math.min(
     banner_data.length - 1,
     current_banner_index + 1
   );
   show_banner_items();
+};
+
+const toast = (message, type = "info") => {
+  if (message instanceof Error) {
+    console.error(message);
+    message = message.message;
+    type = "error";
+  }
+  const notification = document.createElement("div");
+  notification.innerHTML = message;
+  notification.classList.add("toast");
+  notification.classList.add(type);
+  notification_queue.push(notification);
+  execute_notification_queue();
+  setTimeout(execute_notification_queue, toast_delay);
+};
+
+const execute_notification_queue = () => {
+  const diff = Date.now() - notification_added;
+  console.log(diff, toast_delay, diff > toast_delay);
+  if (diff > toast_delay) {
+    const old_toast = _(".toast");
+    if (old_toast != null) {
+      notification_added = 0;
+      body.removeChild(old_toast);
+    }
+    if (notification_queue.length > 0) {
+      notification_added = Date.now();
+      body.appendChild(notification_queue.shift());
+      setTimeout(execute_notification_queue, toast_delay);
+    }
+  }
+};
+
+const fetch_json = async (url, method = "GET", cache = false) => {
+  cache = cache ? "force-cache" : "no-store";
+  return new Promise(async (resolve, reject) => {
+    fetch(url, {
+      method,
+      cache
+    })
+      .then(async response => {
+        if (response.status === 200) {
+          return response.json().catch(reject);
+        }
+        throw new Error(`Status error : ${response.status}`);
+      })
+      .then(resolve)
+      .catch(reject);
+  });
+};
+
+const search_it = event => {
+  const previous_value = search.getAttribute("previous-key") || "";
+  const value = search.value || "";
+  search.setAttribute("previous-key", value);
+  // esc key
+  if (event.keyCode == 27) {
+    search.setAttribute("previous-key", "");
+    search.value = "";
+    return;
+  }
+  // no value or same value but not enter key (enter key: force search)
+  if (value == "" || (previous_value == value && event.keyCode != 13)) {
+    return; // empty key or same as previous value
+  }
+  // search
 };
