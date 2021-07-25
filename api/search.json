@@ -1,0 +1,34 @@
+[
+  {
+    "name": "Acer Laptop",
+    "link": "/acer/laptop"
+  },
+  {
+    "name": "Asus Laptop",
+    "link": "/asus/laptop"
+  },
+  {
+    "name": "Dell Laptop",
+    "link": "/dell/laptop"
+  },
+  {
+    "name": "Personal Computer",
+    "link": "/pc/desktop"
+  },
+  {
+    "name": "Acer Laptop",
+    "link": "/acer/laptop"
+  },
+  {
+    "name": "Asus Laptop",
+    "link": "/asus/laptop"
+  },
+  {
+    "name": "Dell laptop",
+    "link": "/dell/laptop"
+  },
+  {
+    "name": "Personal Computer",
+    "link": "/pc/desktop"
+  }
+]

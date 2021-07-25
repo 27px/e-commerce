@@ -4,8 +4,8 @@ const toast_delay = 3 * 1000; // 3 in seconds (same as css animation delay)
 
 let body, splash, wishlist, cart, user, search, class_list, banner, offer;
 let category_template, product_template, banner_right_arrow, banner_left_arrow;
-let dot_indicator,
-  max_allowed_category = 10,
+let dot_indicator, search_result_container;
+let max_allowed_category = 10,
   category_data = [],
   product_data = [],
   banner_data = [],
@@ -20,6 +20,7 @@ const products_url = "../api/products.json";
 const product_image_url = "./images/product";
 const banner_url = "../api/banner.json";
 const banner_image_url = "./images/banner";
+const search_url = "../api/search.json";
 
 window.onload = async () => {
   body = document.body;
@@ -31,6 +32,7 @@ window.onload = async () => {
   banner_left_arrow = _(".banner>.arrow.left");
   banner_right_arrow = _(".banner>.arrow.right");
   dot_indicator = _(".dot-indicator");
+  search_result_container = _(".search-result-container");
 
   category_template = _("#category");
   category_container = _(".category-container");
@@ -50,6 +52,7 @@ window.onload = async () => {
   banner_right_arrow.addEventListener("click", banner_move_right);
 
   search.addEventListener("keyup", search_it);
+  search.addEventListener("blur", close_search);
 
   load_category();
   load_products();
@@ -66,6 +69,7 @@ function setSize() {
   const category_width = 100;
   max_allowed_category = parseInt(width / category_width);
   show_category_items();
+  adjust_search_result_container();
 }
 
 function open_link(item) {
@@ -242,9 +246,9 @@ const toast = (message, type = "info") => {
 };
 
 const execute_notification_queue = () => {
-  const diff = Date.now() - notification_added;
-  console.log(diff, toast_delay, diff > toast_delay);
-  if (diff > toast_delay) {
+  const time_difference = Date.now() - notification_added;
+  console.log(time_difference, toast_delay, time_difference > toast_delay);
+  if (time_difference > toast_delay) {
     const old_toast = _(".toast");
     if (old_toast != null) {
       notification_added = 0;
@@ -276,7 +280,20 @@ const fetch_json = async (url, method = "GET", cache = false) => {
   });
 };
 
-const search_it = event => {
+const adjust_search_result_container = () => {
+  const { bottom, width, left } = search.getBoundingClientRect();
+  const result_style = search_result_container.style;
+  result_style.top = `${bottom}px`;
+  result_style.left = `${left}px`;
+  result_style.width = `${width}px`;
+};
+
+const close_search = () => {
+  search_result_container.style.display = "none";
+};
+
+const search_it = async event => {
+  search_result_container.style.display = "block";
   const previous_value = search.getAttribute("previous-key") || "";
   const value = search.value || "";
   search.setAttribute("previous-key", value);
@@ -284,11 +301,33 @@ const search_it = event => {
   if (event.keyCode == 27) {
     search.setAttribute("previous-key", "");
     search.value = "";
+    close_search();
     return;
   }
-  // no value or same value but not enter key (enter key: force search)
-  if (value == "" || (previous_value == value && event.keyCode != 13)) {
-    return; // empty key or same as previous value
+  if (value == "") {
+    close_search();
+    return;
+  }
+  // same value but not enter key (enter key: force search)
+  if (previous_value == value && event.keyCode != 13) {
+    return; // same as previous value
   }
   // search
+  const data =
+    (await fetch_json(search_url).catch(error => {
+      console.error(error);
+      toast("Searching Failed", "error");
+    })) || [];
+  while (search_result_container.firstChild) {
+    search_result_container.removeChild(search_result_container.firstChild);
+  }
+
+  data.forEach(item => {
+    const result = document.createElement("div");
+    result.classList.add("search-item");
+    result.innerHTML = item.name.replaceAll(value, `<b>${value}</b>`);
+    result.setAttribute("link", item.link);
+    result.addEventListener("click", open_link);
+    search_result_container.appendChild(result);
+  });
 };
